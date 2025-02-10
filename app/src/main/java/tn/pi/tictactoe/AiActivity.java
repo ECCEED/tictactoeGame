@@ -5,23 +5,28 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class AiActivity extends AppCompatActivity {
 
-    private TextView tvStatus;
+    private TextView tvStatus, tvPlayerName;
     private Button[] buttons = new Button[9];
     private Button btnRestart, btnBackToMenu;
-    private String currentPlayer = "X";
-    private boolean gameActive = true; // To check if the game is active or ended
+    private String currentPlayer = "X"; // "X" is the player, "O" is the AI
+    private boolean gameActive = true;
     private String[] board = new String[9]; // To track board state
+    private String playerName = ""; // Player's name
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_ai);
 
         tvStatus = findViewById(R.id.tvStatus);
+        tvPlayerName = findViewById(R.id.tvPlayerName); // TextView to display player name
+        btnRestart = findViewById(R.id.btnRestart);
+        btnBackToMenu = findViewById(R.id.btnBackToMenu);
 
         // Link all buttons to the array
         buttons[0] = findViewById(R.id.button00);
@@ -34,17 +39,16 @@ public class MainActivity extends AppCompatActivity {
         buttons[7] = findViewById(R.id.button21);
         buttons[8] = findViewById(R.id.button22);
 
-        // Link restart and back to menu buttons
-        btnRestart = findViewById(R.id.btnRestart);
-        btnBackToMenu = findViewById(R.id.btnBackToMenu);
-
-        btnRestart.setVisibility(View.GONE); // Hide initially
-        btnBackToMenu.setVisibility(View.GONE); // Hide initially
-
         // Initialize the board state
         for (int i = 0; i < 9; i++) {
             board[i] = "";
         }
+
+        // Get the player's name from the Intent
+        playerName = getIntent().getStringExtra("playerName");
+
+        // Display the player's name on the screen
+        tvPlayerName.setText("Player: " + playerName);
 
         // Set up listeners for each button
         for (int i = 0; i < 9; i++) {
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onButtonClick(int index) {
-        // If the game is not active, return
+        // If the game is not active or the cell is already occupied, return
         if (!gameActive || !board[index].equals("")) {
             return;
         }
@@ -74,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
         if (checkWinner()) {
             tvStatus.setText(currentPlayer + " wins!");
             gameActive = false;
-            btnRestart.setVisibility(View.VISIBLE); // Show restart button
-            btnBackToMenu.setVisibility(View.VISIBLE); // Show back to menu button
+            btnRestart.setVisibility(View.VISIBLE);
+            btnBackToMenu.setVisibility(View.VISIBLE);
             return;
         }
 
@@ -83,22 +87,69 @@ public class MainActivity extends AppCompatActivity {
         if (isBoardFull()) {
             tvStatus.setText("It's a draw!");
             gameActive = false;
-            btnRestart.setVisibility(View.VISIBLE); // Show restart button
-            btnBackToMenu.setVisibility(View.VISIBLE); // Show back to menu button
+            btnRestart.setVisibility(View.VISIBLE);
+            btnBackToMenu.setVisibility(View.VISIBLE);
             return;
         }
 
         // Switch player
         currentPlayer = currentPlayer.equals("X") ? "O" : "X";
         tvStatus.setText(currentPlayer + "'s Turn");
+
+        // If it's the AI's turn, make a move
+        if (currentPlayer.equals("O")) {
+            aiMove();
+        }
+    }
+
+    private void aiMove() {
+        // Find the first available move for the AI (simple random move)
+        int move = getRandomMove();
+        board[move] = "O";
+        buttons[move].setText("O");
+        buttons[move].setEnabled(false);
+
+        // Check if the AI has won
+        if (checkWinner()) {
+            tvStatus.setText("AI wins!");
+            gameActive = false;
+            btnRestart.setVisibility(View.VISIBLE);
+            btnBackToMenu.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        // Check if the game is a draw
+        if (isBoardFull()) {
+            tvStatus.setText("It's a draw!");
+            gameActive = false;
+            btnRestart.setVisibility(View.VISIBLE);
+            btnBackToMenu.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        // Switch player to human
+        currentPlayer = "X";
+        tvStatus.setText("Player's Turn");
+    }
+
+    private int getRandomMove() {
+        // Return a random available move for the AI
+        int[] availableMoves = new int[9];
+        int count = 0;
+        for (int i = 0; i < 9; i++) {
+            if (board[i].equals("")) {
+                availableMoves[count++] = i;
+            }
+        }
+        int randomIndex = (int) (Math.random() * count);
+        return availableMoves[randomIndex];
     }
 
     private boolean checkWinner() {
-        // Check all winning combinations
         int[][] winCombinations = {
-                {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, // Rows
-                {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, // Columns
-                {0, 4, 8}, {2, 4, 6}  // Diagonals
+                {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
+                {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
+                {0, 4, 8}, {2, 4, 6}
         };
 
         for (int[] combo : winCombinations) {
@@ -121,28 +172,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void restartGame() {
-        // Reset the board
         for (int i = 0; i < 9; i++) {
             board[i] = "";
             buttons[i].setText("");
             buttons[i].setEnabled(true); // Re-enable buttons
         }
 
-        // Reset game state
         gameActive = true;
         currentPlayer = "X";
-        tvStatus.setText("Player 1's Turn");
+        tvStatus.setText("Player's Turn");
 
-        // Hide restart button and back to menu button again
         btnRestart.setVisibility(View.GONE);
         btnBackToMenu.setVisibility(View.GONE);
     }
 
     private void goBackToMenu() {
         // Navigate to StartActivity
-        Intent intent = new Intent(MainActivity.this, StartActivity.class);
+        Intent intent = new Intent(AiActivity.this, StartActivity.class);
         startActivity(intent);
-        finish(); // Finish the current activity so the user can't come back using the back button
+        finish(); // Finish the current activity
     }
-
 }

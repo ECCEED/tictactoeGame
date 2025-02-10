@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/back"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/etPlayerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Your Name"
+        android:textSize="18sp"
+        android:padding="10dp"/>
+
+    <Button
+        android:id="@+id/btnPlayHuman"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Play vs Human"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/btnPlayAI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Play vs AI"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>

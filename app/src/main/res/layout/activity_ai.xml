@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/back"
+    android:padding="16dp">
+
+    <!-- Player name display -->
+    <TextView
+        android:id="@+id/tvPlayerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player: "
+        android:textSize="18sp"
+        android:layout_gravity="center"/>
+
+    <!-- Status display -->
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player's Turn"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"/>
+
+    <!-- TicTacToe Grid -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:columnCount="3"
+        android:rowCount="3"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/button00"
+            style="@style/GameButton"/>
+        <Button
+            android:id="@+id/button01"
+            style="@style/GameButton"/>
+        <Button
+            android:id="@+id/button02"
+            style="@style/GameButton"/>
+        <Button
+            android:id="@+id/button10"
+            style="@style/GameButton"/>
+        <Button
+            android:id="@+id/button11"
+            style="@style/GameButton"/>
+        <Button
+            android:id="@+id/button12"
+            style="@style/GameButton"/>
+        <Button
+            android:id="@+id/button20"
+            style="@style/GameButton"/>
+        <Button
+            android:id="@+id/button21"
+            style="@style/GameButton"/>
+        <Button
+            android:id="@+id/button22"
+            style="@style/GameButton"/>
+    </GridLayout>
+
+    <!-- Restart and Back Buttons -->
+    <Button
+        android:id="@+id/btnRestart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Restart"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnBackToMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back to Menu"
+        android:visibility="gone"/>
+
+</LinearLayout>
